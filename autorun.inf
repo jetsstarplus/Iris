@@ -1,0 +1,6 @@
+[autorun]
+label = Iris Dynamics
+open = IrisKenya.exe [open][1] "iris.exe"
+
+[Installed]
+ProductCode = {B0D58B26-CF8F-4EE9-983C-07A796F7032A}
