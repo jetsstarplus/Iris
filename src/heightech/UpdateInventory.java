@@ -14,6 +14,7 @@ import PrinterDesign.Table;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +35,7 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
@@ -134,7 +137,6 @@ public class UpdateInventory extends javax.swing.JFrame {
         RESET = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setAlwaysOnTop(true);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 204, 0));
@@ -197,6 +199,11 @@ public class UpdateInventory extends javax.swing.JFrame {
         jButtonPrintReset.setBackground(new java.awt.Color(255, 102, 102));
         jButtonPrintReset.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButtonPrintReset.setText("PRINT AND RESET");
+        jButtonPrintReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrintResetActionPerformed(evt);
+            }
+        });
 
         jButtonPrint.setBackground(new java.awt.Color(255, 153, 51));
         jButtonPrint.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -282,6 +289,10 @@ public class UpdateInventory extends javax.swing.JFrame {
            resetDatabase();
        }
     }//GEN-LAST:event_RESETActionPerformed
+
+    private void jButtonPrintResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrintResetActionPerformed
+            printInDocument();
+    }//GEN-LAST:event_jButtonPrintResetActionPerformed
   /** This method populates the inventory table */
      public final void populateJtableInventory()
     {
@@ -364,6 +375,7 @@ public class UpdateInventory extends javax.swing.JFrame {
                  str.append("Item Number    ");
                  str.append("Quantities     ");
                  str.append("Total Prices     \n");
+                  str.append("\n--------------------------------------------------------------------------------\n");
                  for(int i=0; i<jTableUpdate.getRowCount(); i++)
                  {
                      for(int j=0; j<jTableUpdate.getColumnCount(); j++)
@@ -382,6 +394,29 @@ public class UpdateInventory extends javax.swing.JFrame {
         }
      }
      
+     
+   public void printInDocument()
+   {
+       MessageFormat footer = new MessageFormat("Page - {0}");
+       MessageFormat header = new MessageFormat("Iris Vision Dynamics");
+       try
+       {
+           boolean complete = jTableUpdate.print(JTable.PrintMode.NORMAL, header, footer, rootPaneCheckingEnabled, null, rootPaneCheckingEnabled);
+           if(complete)
+           {
+               JOptionPane.showMessageDialog(null, "Printing is successful", "PRINTING MESSAGE", INFORMATION_MESSAGE);
+           }
+           else
+           {
+               JOptionPane.showMessageDialog(null, "Printing is Unsuccessful", "PRINTING MESSAGE",  ERROR_MESSAGE);
+           }
+       }
+       
+       catch(PrinterException p)
+       {
+           
+       }
+   }
    public final List getItem(int col)
    {
        
@@ -429,7 +464,7 @@ private void setIcon() {
            ResultSet rs;
            try {
                st = conn.createStatement();
-               rs=st.executeQuery("DELETE FROM INVENTORY");
+               rs=st.executeQuery("DLETE FROM INVENTORY");
                
               while(rs.next())
               {
